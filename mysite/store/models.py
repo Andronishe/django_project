@@ -7,9 +7,9 @@ class Gamestores(models.Model):
 
 
 
-
 class Game_category(models.Model):
     category = models.CharField(max_length=100)
+
 
 
 class Games_authors(models.Model):
@@ -36,7 +36,7 @@ class Gamestore_games(models.Model):
     price = models.DecimalField(max_digits=5, decimal_places=2)
 
 
-class Gamastore_sold_games(models.Model):
+class Gamestore_sold_games(models.Model):
     store = models.ForeignKey(Gamestores, on_delete=models.CASCADE)
     game = models.ForeignKey(Games, on_delete=models.DO_NOTHING)
     user = models.ForeignKey(Users, on_delete=models.CASCADE)
