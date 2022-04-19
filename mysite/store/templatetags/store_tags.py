@@ -20,6 +20,6 @@ def get_menu():
             {'title': "О сайте", 'url_name': 'about'},
             {'title': "Обратная связь", 'url_name': 'contact'},
             {'title': "Корзина", 'url_name': 'basket'},
-            {'title': "Войти", 'url_name': 'login'}
+
             ]
     return menu
