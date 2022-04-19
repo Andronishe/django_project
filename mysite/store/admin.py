@@ -4,15 +4,15 @@ from .models import *
 
 
 class GamesAdmin(admin.ModelAdmin):
-    list_display=('id', 'title', 'author', 'publish_date')
+    list_display=('id', 'title', 'author', 'photo', 'publish_date')
     list_display_links=('id', 'title')
     search_fields = ('title', 'author')
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('id', 'category')
-    list_display_links = ('id', 'category')
-    search_fields = ('category',)
+    list_display = ('id', 'name')
+    list_display_links = ('id', 'name')
+    search_fields = ('name',)
 
 
 class GamestoresAdmin(admin.ModelAdmin):

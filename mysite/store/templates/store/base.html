@@ -1,4 +1,5 @@
 {%load static%}
+{% load store_tags %}
 
 <!DOCTYPE html>
 <html lang="ru">
@@ -15,18 +16,10 @@
 <body>
 
 <div class="topnav">
-    {% if cat_selected == 0 %}
-    <li class="selected">Все категории</li>
-    {% else %}
+
     <a href="{% url 'home' %}">Все категории</a>
-    {% endif %}
-    {% for c in cats %}
-    {% if c.pk == cat_selected %}
-    <div class="selected"{{ c.category }}></div>
-    {% else %}
-    <a href="{{ c.get_absolute_url }}">{{ c.category }}</a>
-    {% endif %}
-    {% endfor %}
+
+    {% show_categories %}
 </div>
 
 <aside>
@@ -34,6 +27,8 @@
     <h3>Навигация</h3>
     {% block mainmenu %}
     <span class="logo"> Gamestore Aggregator</span>
+
+    {% get_menu as menu %}
 
     {% for m in menu %}
     <ul>
@@ -55,7 +50,34 @@
         {% endblock %}
         <!-- Конец блока контента -->
     </div>
+
+
 </main>
+{% if page_obj.has_other_pages %}
+<nav class="list-pages">
+    <ul>
+        {% if page_obj.has_previous %}
+<li class="page-num">
+         <a href="?page={{ page_obj.previous_page_number }}">&lt;</a>
+</li>
+{% endif %}
+        {% for p in paginator.page_range %}
+                   {% if page_obj.number == p %}
+        <li class="page-num page-num-selected">{{ p }}</li>
+                   {% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2  %}
+        <li class="page-num">
+            <a href="?page={{ p }}">{{ p }}</a>
+        </li>
+                   {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+<li class="page-num">
+         <a href="?page={{ page_obj.next_page_number }}">&gt;</a>
+</li>
+{% endif %}
+    </ul>
+</nav>
+{%endif%}
 
 </body>
 </html>

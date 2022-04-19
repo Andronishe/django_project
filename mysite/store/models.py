@@ -16,10 +16,10 @@ class Gamestores(models.Model):
 
 
 class Game_category(models.Model):
-    category = models.CharField(max_length=100, verbose_name='Категория')
+    name = models.CharField(max_length=100, verbose_name='Категория')
 
     def __str__(self):
-        return self.category
+        return self.name
 
     class Meta:
         verbose_name = "Категория"
@@ -56,6 +56,7 @@ class Users(models.Model):
 class Games(models.Model):
     author = models.ForeignKey(Games_authors, on_delete=models.PROTECT, verbose_name='автор')
     title = models.CharField(max_length=100, verbose_name='название')
+    photo = models.ImageField(upload_to="photos/%Y/%m/%d/", null=True, verbose_name='фото')
     publish_date = models.DateField(auto_now_add=True, verbose_name='публикация')
     category = models.ForeignKey(Game_category, on_delete=models.DO_NOTHING, verbose_name='категория')
 
@@ -76,6 +77,9 @@ class Gamestore_games(models.Model):
     game = models.ForeignKey(Games, on_delete=models.CASCADE)
     count = models.IntegerField(verbose_name='количество')
     price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="цена")
+
+    def __str__(self):
+        return self.price
 
     class Meta:
         verbose_name = "Игры в магазинах"
