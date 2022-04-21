@@ -1,0 +1,21 @@
+{% extends 'store/base.html' %}
+
+
+{% block content %}
+<div class="features">
+    <h1>{{ title }}</h1>
+    <ul>
+        {% for p in object_list %}
+        <h2>{{ p.title }}</h2>
+        <p><img class="img-article" src="{{p.photo.url}}" style="width: 300px"></p>
+
+        <p>Релиз: {{p.publish_date}}</p>
+        <div class="clear"></div>
+        <p class="link-read-post"><a href="{{ p.get_absolute_url }}">Информация об игре</a></p>
+        </li>
+
+
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

@@ -87,7 +87,7 @@ class GameCategory(ListView):
     allow_empty = False
 
     def get_queryset(self):
-        return Games.objects.filter(category__id=self.kwargs['cat_id'])
+        return Games.objects.filter(category__id=self.kwargs['cat_id']).select_related('category')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -144,3 +144,19 @@ class LoginUser(LoginView):
 def logout_user(request):
     logout(request)
     return redirect('login')
+
+
+class Search(ListView):
+    model = Games
+    template_name = "store/index.html"
+    context_object_name = 'games'
+
+    def get_queryset(self):
+        games = Games.objects.filter(title__icontains=self.request.GET.get('search'))
+        return games
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Поиск'
+        return context
+

@@ -20,6 +20,9 @@
     <a href="{% url 'home' %}">Все категории</a>
 
     {% show_categories %}
+    <form action="{% url 'search' %}" method="get" >
+    <input type="search" placeholder="Поиск игры" name="search" required="">
+    </form>
 </div>
 
 <aside>
