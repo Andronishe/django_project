@@ -48,6 +48,17 @@ def about(request):
 #         return context
 
 
+def addgame(request):
+    if request.method == 'POST':
+        form = AddPostForm(request.POST, request.FILES)
+        if form.is_valid():
+            #print(form.cleaned_data)
+            form.save()
+            return redirect('home')
+    else:
+        form = AddPostForm()
+    return render(request, 'store/addgame.html', {'form': form, 'title': 'Добавление статьи'})
+
 
 def contact(request):
     return HttpResponse("Обратная связь")

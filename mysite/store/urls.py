@@ -6,6 +6,7 @@ urlpatterns = [
     path('', GamesHome.as_view(), name='home'),
     path('about/', about, name='about'),
     path('contact/', contact, name='contact'),
+    path('addgame/', addgame, name='add_game'),
     path('login/', LoginUser.as_view(), name='login'),
     path('logout/', logout_user, name='logout'),
     path('register/', RegisterUser.as_view(), name='register'),
