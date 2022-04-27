@@ -23,6 +23,9 @@
     <form action="{% url 'search' %}" method="get" >
     <input type="search" placeholder="Поиск игры" name="search" required="">
     </form>
+    <a href="{% url 'game_pdf' %}">Cкачать pdf</a>
+    <a href="{% url 'export_excel' %}">Cкачать xls</a>
+
 </div>
 
 <aside>

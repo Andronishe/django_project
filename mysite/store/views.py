@@ -1,12 +1,23 @@
+import datetime
+import io
+
+import xlwt
 from django.contrib.auth import logout, login
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.views import LoginView
-from django.http import HttpResponse, HttpResponseNotFound, Http404
+from django.http import HttpResponse, HttpResponseNotFound, Http404, JsonResponse, FileResponse
+from django.template.loader import get_template
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import ListView, DetailView, CreateView
 from django.shortcuts import render, get_object_or_404, redirect
+from reportlab.lib.units import inch
+from django.core import serializers
+
 from .models import *
 from .forms import *
+import json
+from reportlab.pdfgen import canvas
 
 
 class GamesHome(ListView):
@@ -171,3 +182,58 @@ class Search(ListView):
         context['title'] = 'Поиск'
         return context
 
+
+# def jsn(request):
+#     data = list(Games.objects.values())
+#     return JsonResponse(data, safe=False)
+#     model = serializers.serialize('json', Games.objects.all())
+#     data = {'model': model}
+#     return JsonResponse(data)
+
+
+def game_pdf(request):
+    buf = io.BytesIO()
+    c = canvas.Canvas(buf, bottomup=0)
+    textob = c.beginText()
+    textob.setTextOrigin(inch, inch)
+    textob.setFont('Helvetica', 14)
+
+    lines = []
+    games = Games.objects.all()
+    for game in games:
+        lines.append(game.title)
+        lines.append(game.author.company)
+        lines.append(str(game.publish_date))
+        lines.append(game.category.name)
+        lines.append(" ")
+
+    for line in lines:
+        textob.textLine(line)
+
+    c.drawText(textob)
+    c.showPage()
+    c.save()
+    buf.seek(0)
+    return FileResponse(buf, as_attachment=True, filename='games.pdf')
+
+
+def export_excel(request):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename=game_excel' + str(datetime.datetime.now()) + '.xls'
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('game_excel')
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+    columns = ['Title', 'Author', 'Category', 'Publish_date']
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    font_style = xlwt.XFStyle()
+    rows = Games.objects.values_list('title', 'author', 'category', 'publish_date')
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, str(row[col_num]), font_style)
+    wb.save(response)
+    return response
