@@ -20,27 +20,43 @@ import json
 from reportlab.pdfgen import canvas
 
 
-class GamesHome(ListView):
-    paginate_by = 5
-    model = Games
-    template_name = 'store/index.html'
-    context_object_name = 'games'
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Главная страница'
-        return context
-
-
-# def index(request):
-#     games = Games.objects.all()
-#     context = {
-#         'games': games,
+# class GamesHome(ListView):
+#     paginate_by = 5
+#     model = Games
+#     form_class = GamesFilter
+#     template_name = 'store/index.html'
+#     context_object_name = 'games'
 #
-#         'title': 'Главная страница',
-#         'cat_selected': 0,
-#     }
-#     return render(request, 'store/index.html', context=context)
+#     def get_context_data(self, *, object_list=None, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['title'] = 'Главная страница'
+#         # context['form'] = GamesFilter
+#         return context
+
+
+def index(request):
+    # gs_games = Gamestore_games.objects.values_list().select_related('game')
+    games = Games.objects.all()
+    form = GamesFilter(request.GET)
+    if form.is_valid():
+        if form.cleaned_data['min_price']:
+            games = games.filter(gsg2game__price__gte=form.cleaned_data["min_price"]).distinct()
+            print(games)
+
+        if form.cleaned_data['max_price']:
+            games = games.filter(gsg2game__price__lte=form.cleaned_data["max_price"]).distinct()
+
+        if form.cleaned_data['ordering']:
+            games = games.order_by(form.cleaned_data['ordering'])
+    context = {
+        'games': games,
+        # 'gs_games': gs_games,
+        'form': form,
+        'title': 'Главная страница',
+        'cat_selected': 0,
+    }
+    return render(request, 'store/index.html', context=context)
 
 
 def about(request):

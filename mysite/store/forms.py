@@ -37,3 +37,14 @@ class AddPostForm(forms.ModelForm):
             raise ValidationError('Длина превышает 200 символов')
 
         return title
+
+
+class GamesFilter(forms.Form):
+        min_price = forms.DecimalField(label='от', required=False)
+        max_price = forms.DecimalField(label='до', required=False)
+        ordering = forms.ChoiceField(label='сортировка', required=False, choices=[
+            ['title', 'по алфавиту'],
+            ['-title', 'по антиалфавиту'],
+            ['-gsg2game__price', 'по убыванию цены'],
+            ['gsg2game__price', 'по возрастанию цены']
+        ])

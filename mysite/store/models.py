@@ -74,12 +74,12 @@ class Games(models.Model):
 
 class Gamestore_games(models.Model):
     store = models.ForeignKey(Gamestores, on_delete=models.CASCADE)
-    game = models.ForeignKey(Games, on_delete=models.CASCADE)
+    game = models.ForeignKey(Games, on_delete=models.CASCADE, related_name='gsg2game')
     count = models.IntegerField(verbose_name='количество')
     price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="цена")
 
     def __str__(self):
-        return self.price
+        return str(self.price)
 
     class Meta:
         verbose_name = "Игры в магазинах"
