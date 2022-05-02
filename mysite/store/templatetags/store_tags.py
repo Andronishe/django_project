@@ -18,9 +18,7 @@ def show_categories():
 def get_menu():
     menu = [{'title': "Главная страница", 'url_name': 'home'},
             {'title': "О сайте", 'url_name': 'about'},
-            # {'title': "Обратная связь", 'url_name': 'contact'},
+            # {'title': "избранное", 'url_name': 'favourite_list'},
             {'title': "Добавить игру", 'url_name': 'add_game'},
-            {'title': "Корзина", 'url_name': 'basket'},
-
             ]
     return menu

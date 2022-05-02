@@ -3,9 +3,10 @@ import io
 
 import xlwt
 from django.contrib.auth import logout, login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.views import LoginView
-from django.http import HttpResponse, HttpResponseNotFound, Http404, JsonResponse, FileResponse
+from django.http import HttpResponse, HttpResponseNotFound, Http404, JsonResponse, FileResponse, HttpResponseRedirect
 from django.template.loader import get_template
 from django.urls import reverse_lazy
 from django.views import View
@@ -90,19 +91,34 @@ def addgame(request):
 def contact(request):
     return HttpResponse("Обратная связь")
 
-
 # def login(request):
 #     return HttpResponse("Авторизация")
 
 
-def basket(request):
-    return HttpResponse("Корзина")
+@login_required
+def favourite_list(request):
+    new = Games.objects.filter(favourites=request.user)
+    return render(request, 'store/favourites.html', {"new": new})
+
+
+@login_required
+def favourite_add(request, id):
+    game = get_object_or_404(Games, id=id)
+    if game.favourites.filter(id=request.user.id).exists():
+        game.favourites.remove(request.user)
+    else:
+        game.favourites.add(request.user)
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 
 def show_game(request, game_id):
     game = get_object_or_404(Games, pk=game_id)
     store_games = get_object_or_404(Gamestore_games, pk=game_id)
     gamestores = Gamestores.objects.all()
+    fav = bool
+
+    if game.favourites.filter(id=request.user.id).exists():
+        fav = True
     info = Games.objects.raw(
         'select store_games.id, title,  name, count, price from store_games join store_gamestore_games sgg on store_games.id = sgg.game_id join store_gamestores sg on sg.id = sgg.store_id where store_games.id = "%s" group by title, name, count, price, store_games.id order by title, price',
         [game_id])
@@ -112,6 +128,7 @@ def show_game(request, game_id):
         'info': info,
         'title': game.title,
         'cat_selected': game.category_id,
+        'fav': fav,
     }
 
     return render(request, 'store/game.html', context=context)

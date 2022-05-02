@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 
 class Gamestores(models.Model):
@@ -43,14 +44,14 @@ class Games_authors(models.Model):
         ordering = ["id", "company"]
 
 
-class Users(models.Model):
-    login = models.CharField(max_length=40, verbose_name='имя пользователя')
-    password = models.CharField(max_length=40, verbose_name='пароль')
-
-    class Meta:
-        verbose_name = "Пользователь"
-        verbose_name_plural = "Пользователи"
-        ordering = ["login"]
+# class Users(models.Model):
+#     login = models.CharField(max_length=40, verbose_name='имя пользователя')
+#     password = models.CharField(max_length=40, verbose_name='пароль')
+#
+#     class Meta:
+#         verbose_name = "Пользователь"
+#         verbose_name_plural = "Пользователи"
+#         ordering = ["login"]
 
 
 class Games(models.Model):
@@ -59,6 +60,8 @@ class Games(models.Model):
     photo = models.ImageField(upload_to="photos/%Y/%m/%d/", null=True, verbose_name='фото')
     publish_date = models.DateField(auto_now_add=True, verbose_name='публикация')
     category = models.ForeignKey(Game_category, on_delete=models.DO_NOTHING, verbose_name='категория')
+    favourites = models.ManyToManyField(User, related_name='favourites', default=None, blank=True)
+
 
     def __str__(self):
         return self.title
@@ -87,15 +90,15 @@ class Gamestore_games(models.Model):
         ordering = ["price", "count"]
 
 
-class Gamestore_sold_games(models.Model):
-    store = models.ForeignKey(Gamestores, on_delete=models.CASCADE)
-    game = models.ForeignKey(Games, on_delete=models.DO_NOTHING)
-    user = models.ForeignKey(Users, on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='цена')
-    insert_date = models.DateField(auto_now_add=True, verbose_name='дата добавления')
-    update_date = models.DateField(auto_now=True, verbose_name='дата обновления')
-
-    class Meta:
-        verbose_name = "Проданные игры"
-        verbose_name_plural = "Проданные игры"
-        ordering = ["price", "insert_date"]
+# class Gamestore_sold_games(models.Model):
+#     store = models.ForeignKey(Gamestores, on_delete=models.CASCADE)
+#     game = models.ForeignKey(Games, on_delete=models.DO_NOTHING)
+#     user = models.ForeignKey(Users, on_delete=models.CASCADE)
+#     price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='цена')
+#     insert_date = models.DateField(auto_now_add=True, verbose_name='дата добавления')
+#     update_date = models.DateField(auto_now=True, verbose_name='дата обновления')
+#
+#     class Meta:
+#         verbose_name = "Проданные игры"
+#         verbose_name_plural = "Проданные игры"
+#         ordering = ["price", "insert_date"]

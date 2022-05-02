@@ -39,10 +39,10 @@ class GamestoreGamesAdmin(ImportExportModelAdmin):
     search_fields = ('price',)
 
 
-@admin.register(Gamestore_sold_games)
-class GamestoreSoldGamesAdmin(ImportExportModelAdmin):
-    list_display = ('id', 'store', 'game', 'price', 'insert_date', 'insert_date')
-    search_fields = ('price',)
+# @admin.register(Gamestore_sold_games)
+# class GamestoreSoldGamesAdmin(ImportExportModelAdmin):
+#     list_display = ('id', 'store', 'game', 'price', 'insert_date', 'insert_date')
+#     search_fields = ('price',)
 
 
 class UserAdmin(ImportExportModelAdmin):
