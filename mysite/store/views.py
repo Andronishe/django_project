@@ -75,7 +75,6 @@ def about(request):
 #         context['title'] = context['game']
 #         return context
 
-
 def addgame(request):
     if request.method == 'POST':
         form = AddPostForm(request.POST, request.FILES)
@@ -248,6 +247,22 @@ def game_pdf(request):
     c.save()
     buf.seek(0)
     return FileResponse(buf, as_attachment=True, filename='games.pdf')
+
+
+def export_doc(request):
+    response = HttpResponse(content_type="text/")
+    response['Content-Disposition'] = 'attachment; filename=products.doc'
+    lines = []
+    games = Games.objects.all()
+    for game in games:
+        lines.append(f'{game.title}\n')
+        lines.append(f'{game.publish_date}\n')
+        lines.append(f'{game.category.name}\n')
+        lines.append(f'{game.author.company}\n')
+        lines.append(f'\n')
+
+    response.writelines(lines)
+    return response
 
 
 def export_excel(request):

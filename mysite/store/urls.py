@@ -16,6 +16,7 @@ urlpatterns = [
     #path('jsn/', jsn, name='jsn'),
     path('game_pdf/', game_pdf, name='game_pdf'),
     path('export_excel/', export_excel, name='export_excel'),
+    path('export_doc/', export_doc, name='export_doc'),
     path('game/<int:game_id>/', show_game, name='game'),
     path('category/<int:cat_id>/', GameCategory.as_view(), name='category'),
 ]
